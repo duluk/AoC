@@ -34,10 +34,10 @@ func get_input() ([]int, []int) {
 	return first, second
 }
 
-func SolveDay1_1() error {
+func SolveDay1_1() (int, error) {
 	first, second := get_input()
 	if first == nil || second == nil {
-		return fmt.Errorf("Error reading input")
+		return 0, fmt.Errorf("Error reading input")
 	}
 
 	sort.Ints(first)
@@ -48,9 +48,7 @@ func SolveDay1_1() error {
 		sum += abs(first[i] - second[i])
 	}
 
-	fmt.Printf("Sum of differences: %d\n", sum)
-
-	return nil
+	return sum, nil
 }
 
 func abs(x int) int {
@@ -60,7 +58,7 @@ func abs(x int) int {
 	return x
 }
 
-func SolveDay1_2() error {
+func SolveDay1_2() (int, error) {
 	// My idea: take the right list and turn it into a set/hashmap whih has the
 	// number as the key and the value is how many times it appears in the
 	// list. Then go through the first list and multiply each number by the
@@ -68,7 +66,7 @@ func SolveDay1_2() error {
 
 	first, second := get_input()
 	if first == nil || second == nil {
-		return fmt.Errorf("Error reading input")
+		return 0, fmt.Errorf("Error reading input")
 	}
 
 	second_map := make(map[int]int)
@@ -81,7 +79,5 @@ func SolveDay1_2() error {
 		sum += n * second_map[n]
 	}
 
-	fmt.Printf("Sum of products: %d\n", sum)
-
-	return nil
+	return sum, nil
 }
