@@ -1,0 +1,176 @@
+// Various ideas that crashed and burned
+
+// func splitOnParen(data []byte, atEOF bool) (advance int, token []byte, err error) {
+// 	for i := 0; i < len(data); i++ {
+// 		if data[i] == ')' {
+// 			return i + 1, data[:i], nil
+// 		}
+// 	}
+// 	if atEOF && len(data) > 0 {
+// 		return len(data), data, nil
+// 	}
+// 	return 0, nil, nil
+// }
+
+// Look for "do()" and split the line at that point, adding it to
+// a slice with the command's prefix and keep processing the line
+// this is not finished
+func splitByCommand(line string) []string {
+	lines := make([]string, 0)
+
+	first := true
+	in_do := false
+	var acc string
+	for _, c := range line {
+		acc += string(c)
+		if c == ')' {
+			if strings.Contains(acc, "do(") {
+				if in_do {
+					lines = append(lines, acc[:len(acc)-4])
+					acc = ""
+				}
+				in_do = true
+			}
+			if strings.Contains(acc, "don't(") {
+				if in_do {
+					lines = append(lines, acc[:len(acc)-4])
+					acc = ""
+				}
+				in_do = false
+			}
+			if first {
+				first = false
+				lines = append(lines, acc)
+				acc = ""
+			}
+		}
+	}
+
+	return lines
+}
+
+// func splitByCommand(line string) []string {
+// 	commands := []string{"do()", "don't()"}
+// 	lines := make([]string, 0)
+//
+// 	for _, command := range commands {
+// 		idx := strings.Index(line, command)
+// 		if idx >= 0 {
+// 			// Prepend the command name to the line, then append it to the
+// 			// slice
+// 			fmt.Printf("Command: %s\n", command)
+//
+// 			lines = append(lines, command+line[:idx])
+// 			line = line[idx:]
+// 		}
+// 	}
+//
+// 	return lines
+// }
+
+// func byCommand(data []byte, atEOF bool) (advance int, token []byte, err error) {
+// 	patterns := []string{"do()", "don't()"}
+//
+// 	for _, pattern := range patterns {
+// 		if i := bytes.Index(data, []byte(pattern)); i >= 0 {
+// 			return i + len(pattern), data[0:i], nil
+// 		}
+// 	}
+//
+// 	if atEOF {
+// 		return len(data), data, nil
+// 	}
+//
+// 	return 0, nil, nil
+// }
+
+
+// func SolveDay3_2(scanner *bufio.Scanner) (int, error) {
+// 	var sum int
+// 	re1 := regexp.MustCompile(`don't\(\).*do\(\)`)
+// 	re2 := regexp.MustCompile(`don't\(\).*$`)
+// 	for scanner.Scan() {
+// 		line := scanner.Text()
+// 		// Replace all matches of the regex "don't().*do()" with "do()"
+// 		line = re1.ReplaceAllString(line, "do()")
+// 		line = re2.ReplaceAllString(line, "")
+// 		// fmt.Printf("Line: %s\n", line)
+// 		s, err := addMul(line)
+// 		if err != nil {
+// 			return 0, err
+// 		}
+// 		sum += s
+// 	}
+//
+// 	return sum, nil
+// }
+
+// func SolveDay3_2(scanner *bufio.Scanner) (int, error) {
+// 	// pattern := `((^.*?))(do\(\)|don't\(\))(.*?)(don't\(\)|$)`
+// 	pattern := `(.*?)do\(\)|don't\(\).*do\(\)(.*?)$`
+// 	// pattern := `(do\(\)|don't\(\))([^()]*(?:\([^()]*\))?)*$`
+// 	// re := regexp.MustCompile(`((^.*)do|do\(\))(.*?)(don't\(\)|$)`)
+// 	re := regexp.MustCompile(pattern)
+//
+// 	var sum int
+// 	for scanner.Scan() {
+// 		line := scanner.Text()
+//
+// 		matches := re.FindStringSubmatch(line)
+// 		// fmt.Printf("Matches: %v\n", matches)
+// 		// fmt.Printf("Len: %d\n", len(matches))
+// 		for i := 0; i < len(matches); i++ {
+// 			fmt.Printf("Match %d: %s\n", i, matches[i])
+// 		}
+//
+// 		if matches[1] != "" {
+// 			s, err := addMul(matches[1])
+// 			if err != nil {
+// 				return 0, err
+// 			}
+// 			sum += s
+// 		}
+// 		if matches[2] != "" {
+// 			s, err := addMul(matches[2])
+// 			if err != nil {
+// 				return 0, err
+// 			}
+// 			sum += s
+// 		}
+// 		// if len(matches) > 0 {
+// 		// 	s, err := addMul(matches[3])
+// 		// 	if err != nil {
+// 		// 		return 0, err
+// 		// 	}
+// 		// 	sum += s
+// 		// }
+// 	}
+//
+// 	return sum, nil
+// }
+
+// switch len(matches) {
+// case 0:
+// 	fmt.Printf("No matches found in line: %s\n", line)
+// case 1:
+// 	fmt.Printf("Match: %s\n", matches[0])
+// case 2:
+// 	s, _ := addMul(matches[1])
+// 	sum += s
+//
+// 	fmt.Printf("Match: %s\n", matches[1])
+// case 3:
+// 	s, _ := addMul(matches[1])
+// 	sum += s
+// 	s, _ = addMul(matches[2])
+// 	sum += s
+//
+// }
+// // if len(matches) > 1 {
+// // 	fmt.Printf("Matches: %v\n", matches)
+// // 	s, err := addMul(matches[1])
+// // 	if err != nil {
+// // 		return 0, err
+// // 	}
+// // 	sum += s
+// // }
